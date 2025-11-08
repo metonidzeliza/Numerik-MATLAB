@@ -1,0 +1,41 @@
+function [] = Aufgabe_5_c(imax)
+% imax Eingabeparameter
+
+n_values = zeros(imax,1);
+times = zeros(imax,1);
+flops_per_second = zeros(imax,1);
+
+for i = 1:imax
+    n = 2^i;
+    
+    a = 2*ones(n,1);       
+    b = -1*ones(n-1,1);    
+    c = -1*ones(n-1,1);  
+    rhs = ones(n,1); 
+
+    [x, t] = thomas_alg_loeser(a, b, c, rhs);
+
+    n_values(i) = n;
+    times(i) = t;
+
+    %Flops durch Rechenzeit teilen
+    flops_per_second(i) = 8*n / t;
+end
+
+
+T = table(n_values, times, flops_per_second,...
+    'VariableNames', {'n','Laufzeit_s','FLOP_per_s'});
+disp(T);
+
+figure;
+plot(n_values, times, '-o');
+xlabel('Systemgröße n');
+ylabel('Laufzeit t [s]');
+title('Laufzeit des Thomas-Algorithmus in Abhängigkeit von n');
+grid on;
+
+
+saveas(gcf,'Thomas_Laufzeit.pdf');
+
+
+end
